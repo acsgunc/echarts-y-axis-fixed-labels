@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ECharts Custom Y-Axis</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  </head>
+  <body style="height: 100%; margin: 0">
+    <div id="main" style="height: 100%"></div>
+    <script>
+      const chart = echarts.init(document.getElementById('main'));
+
+      const option = {
+        title: {
+          text: 'Y-Axis with Custom Labels and Dynamic Time',
+        },
+        tooltip: {
+          trigger: 'axis',
+        },
+        xAxis: {
+          type: 'time',
+          boundaryGap: false,
+        },
+        yAxis: {
+          type: 'value',
+          min: -10,
+          max: 100,
+          axisLabel: {
+            formatter: function (value) {
+              const allowed = [0, 20, 40, 60, 80, 100];
+              return allowed.includes(value) ? value : '';
+            },
+          },
+          splitNumber: 6,
+        },
+        series: [
+          {
+            name: 'Value',
+            type: 'line',
+            showSymbol: false,
+            data: [],
+          },
+        ],
+      };
+
+      chart.setOption(option);
+
+      // Simulate dynamic data
+      setInterval(function () {
+        const now = new Date();
+        const value = Math.round(Math.random() * 100);
+        const data = chart.getOption().series[0].data;
+        data.push([now, value]);
+        if (data.length > 20) data.shift(); // keep last 20 points
+        chart.setOption({
+          series: [
+            {
+              data: data,
+            },
+          ],
+        });
+      }, 1000);
+    </script>
+  </body>
+</html>
